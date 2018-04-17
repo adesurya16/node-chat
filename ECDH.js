@@ -53,15 +53,11 @@ exports.ECDH = function() {
 			return doublePoint(p);
 		}
 
-		if (p.x == q.x) {
-			return point.Point(0,0);
-		}
-
 		gradien = mod((p.y - q.y) * bignum(p.x - q.x).invertm(m).toNumber(), m);
 		r  = point.Point(0, 0);
 		r.x = mod(Math.pow(gradien, 2) - p.x - q.x, m);
 		r.y = mod(gradien * (p.x - r.x) - p.y, m);
-
+		// console.log(r.x);
 		return r;
 	}
 
@@ -76,11 +72,11 @@ exports.ECDH = function() {
 	}
 
 	function doublePoint(p) {
-		gradien = mod(((3 * p.x + a) * bignum(2 * p.y).invertm(m)), m);
+		gradien = mod(((3 * p.x * p.x + a) * bignum(2 * p.y).invertm(m)), m);
 		r  = point.Point(0,0);
 		r.x = mod((Math.pow(gradien, 2) - 2 * p.x),m);
 		r.y = mod((gradien * (p.x - r.x) - p.y), m);
-
+		// console.log(r.x);
 		return r;
 	}
 
@@ -92,6 +88,7 @@ exports.ECDH = function() {
 
 	function createPublicKey() {
 		i = 1;
+		base = point.Point(0, 1);
 		publicKey = base;
 		while (i < privateKey) {
 			publicKey = add(publicKey, base);
@@ -101,14 +98,13 @@ exports.ECDH = function() {
 		return publicKey;
 	}
 
-	function createSecretKey(_a, _b) {
-		ab = _a * _b;
-
+	function createSecretKey(publicKey) {
 		i = 1;
-		secretKey = base;
+		secretKey = publicKey;
 
-		while (i < ab) {
-			secretKey = add(secretKey, base);
+		while (i < privateKey) {
+			secretKey = add(secretKey, publicKey);
+			i++;
 		}
 
 		return secretKey;
@@ -117,6 +113,6 @@ exports.ECDH = function() {
 	return {
 		createPublicKey: createPublicKey,
 		createPrivateKey: createPrivateKey,
-		createSecretKey: createSecretKey
+		createSecretKey: createSecretKey,
 	}
 }

@@ -2,8 +2,8 @@ var http = require('http');
 var ecdh = require('./ECDH');
 var ecdhObj = ecdh.ECDH();
 var point = require('./Point');
-http.createServer(function (req, res) {
 
+http.createServer(function (req, res) {
 	var privateKey = ecdhObj.createPrivateKey();
 	var publicKey = ecdhObj.createPublicKey(point.Point(3, 3));
     res.writeHead(200, {'Content-Type': 'text/html'});

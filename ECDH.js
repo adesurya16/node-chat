@@ -1,7 +1,6 @@
 var point = require('./Point');
 var prime = require('find-prime');
 var random = require('random-int');
-var bignum = require('bignum');
 
 exports.ECDH = function() {
 	var a, b, m, base, privateKey, publicKey, secretKey;
@@ -48,12 +47,21 @@ exports.ECDH = function() {
 		return (x % n + n) % n;
 	}
 
+	function modInverse(a, _m) {
+		a = mod(a, _m);
+		for(i = 1; i < m; i++) {
+			if (mod((a*i), _m) == 1) {
+				return i;
+			}
+		}
+	}
+
 	function add(p, q) {
 		if (p.x == q.x && p.y == q.y) {
 			return doublePoint(p);
 		}
 
-		gradien = mod((p.y - q.y) * bignum(p.x - q.x).invertm(m).toNumber(), m);
+		gradien = mod((p.y - q.y) * modInverse(p.x - q.x, m), m);
 		r  = point.Point(0, 0);
 		r.x = mod(Math.pow(gradien, 2) - p.x - q.x, m);
 		r.y = mod(gradien * (p.x - r.x) - p.y, m);
@@ -72,7 +80,7 @@ exports.ECDH = function() {
 	}
 
 	function doublePoint(p) {
-		gradien = mod(((3 * p.x * p.x + a) * bignum(2 * p.y).invertm(m)), m);
+		gradien = mod(((3 * p.x * p.x + a) * modInverse(2 * p.y, m)), m);
 		r  = point.Point(0,0);
 		r.x = mod((Math.pow(gradien, 2) - 2 * p.x),m);
 		r.y = mod((gradien * (p.x - r.x) - p.y), m);
@@ -114,5 +122,6 @@ exports.ECDH = function() {
 		createPublicKey: createPublicKey,
 		createPrivateKey: createPrivateKey,
 		createSecretKey: createSecretKey,
+		modInverse : modInverse
 	}
 }

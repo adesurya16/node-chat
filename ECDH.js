@@ -3,21 +3,10 @@ var prime = require('find-prime');
 var random = require('random-int');
 
 exports.ECDH = function() {
-	var a, b, m = 105943, base, privateKey, publicKey, secretKey;
+	var a = 91, b = 49, m = 105943, base, privateKey, publicKey, secretKey;
 
-	function generateEquation() {
-		a = random(1, 100);
-		b = random(1, 100);
-
-		while (4 * Math.pow(a, 3) + 27 * Math.pow(b, 2) == 0) {
-			a = random(1, 100);
-			b = random(1, 100);
-		}
-	}
 
 	function selectBase() {
-		generateEquation();
-
 		base = point.Point(0, 0);
 		found = false;
 		x = 0;

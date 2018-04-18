@@ -16,7 +16,7 @@ var path = require('path');
 
 
 /* Add crypto */
-var ecdh = require('./crypto/ecdh');
+var ecdh = require('./crypto/ECDH');
 var ecdh_obj = ecdh.ECDH();
 var private_key = ecdh_obj.createPrivateKey();
 var public_key = ecdh_obj.createPublicKey();
@@ -35,6 +35,7 @@ var rateInterval = [];
 
 var chat = sockjs.createServer();
 var clients = [];
+var secret_keys = [];
 var users = {};
 var bans = [];
 var uid = 1;
@@ -171,10 +172,11 @@ chat.on('connection', function(conn) {
 function updateUser(id, name, public_key_user) {
     if(name.length > 2 && name.length < 17 && name.indexOf(' ') < 0 && !utils.checkUser(clients, name) && name.match(alphanumeric) && name != 'Console' && name != 'System') {
         if(clients[id].un == null) {
-            clients[id].con.write(JSON.stringify({type:'server', info:'success'}));
+            clients[id].con.write(JSON.stringify({type:'server', info:'success', public_key_server: public_key}));
             uid++;
         }
-
+        secret_keys[clients[id].id] = ecdh_obj.createSecretKey(public_key_user);
+        log("[Chiper key] ", JSON.stringify(secret_keys[clients[id].id]));
         users[clients[id].id].un = name;
         utils.sendToAll(clients, {
             type: 'server',

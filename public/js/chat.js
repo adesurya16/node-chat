@@ -58,6 +58,7 @@ var connect = function() {
             socket.send(JSON.stringify({type: 'ping'}));
         }, 50 * 1000);
         console.info('Connection established.');
+        console.info('Your public key :',public_key);
         updateInfo();
     };
 
@@ -152,6 +153,7 @@ var connect = function() {
                     updateBar('mdi-content-send', 'Enter your message here', false);
                     connected = true;
                     settings.name = username;
+                    settings.secret_key = ecdh_obj.createSecretKey(data.public_key_server);
                     localStorage.settings = JSON.stringify(settings);
                     break;
 

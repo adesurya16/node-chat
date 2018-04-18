@@ -84,7 +84,7 @@ exports.ECDH = function() {
 		r  = point.Point(0,0);
 		r.x = mod((Math.pow(gradien, 2) - 2 * p.x),m);
 		r.y = mod((gradien * (p.x - r.x) - p.y), m);
-		// console.log(r.x);
+		
 		return r;
 	}
 
@@ -96,7 +96,6 @@ exports.ECDH = function() {
 
 	function createPublicKey() {
 		i = 1;
-		base = point.Point(0, 1);
 		publicKey = base;
 		while (i < privateKey) {
 			publicKey = add(publicKey, base);
@@ -122,6 +121,5 @@ exports.ECDH = function() {
 		createPublicKey: createPublicKey,
 		createPrivateKey: createPrivateKey,
 		createSecretKey: createSecretKey,
-		modInverse : modInverse
 	}
 }

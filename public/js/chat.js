@@ -17,6 +17,11 @@ var version = VERSION;
 var blop = new Audio('sounds/blop.wav');
 var regex = /(&zwj;|&nbsp;)/g;
 
+/* Add crypto */
+var ecdh_obj = ECDH();
+var private_key = ecdh_obj.createPrivateKey();
+var public_key = ecdh_obj.createPublicKey();
+
 var settings = {
     'name': null,
     'emoji': true,
@@ -53,6 +58,7 @@ var connect = function() {
             socket.send(JSON.stringify({type: 'ping'}));
         }, 50 * 1000);
         console.info('Connection established.');
+        console.info('Your public key :',public_key);
         updateInfo();
     };
 
@@ -147,6 +153,7 @@ var connect = function() {
                     updateBar('mdi-content-send', 'Enter your message here', false);
                     connected = true;
                     settings.name = username;
+                    settings.secret_key = ecdh_obj.createSecretKey(data.public_key_server);
                     localStorage.settings = JSON.stringify(settings);
                     break;
 
@@ -249,7 +256,8 @@ function sendSocket(value, method, other, txt) {
 function updateInfo() {
     socket.send(JSON.stringify({
         user: username,
-        type: 'update'
+        type: 'update',
+        public_key: public_key,
     }));
 }
 

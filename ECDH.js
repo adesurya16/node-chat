@@ -3,13 +3,7 @@ var prime = require('find-prime');
 var random = require('random-int');
 
 exports.ECDH = function() {
-	var a, b, m, base, privateKey, publicKey, secretKey;
-
-	function generateMod() {
-		m = prime(10, function(error, prime) {
-			return prime[0];
-		});
-	}
+	var a, b, m = 105943, base, privateKey, publicKey, secretKey;
 
 	function generateEquation() {
 		a = random(1, 100);
@@ -23,7 +17,7 @@ exports.ECDH = function() {
 
 	function selectBase() {
 		generateEquation();
-		generateMod();
+
 		base = point.Point(0, 0);
 		found = false;
 		x = 0;
@@ -84,7 +78,7 @@ exports.ECDH = function() {
 		r  = point.Point(0,0);
 		r.x = mod((Math.pow(gradien, 2) - 2 * p.x),m);
 		r.y = mod((gradien * (p.x - r.x) - p.y), m);
-		
+
 		return r;
 	}
 

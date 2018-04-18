@@ -15,6 +15,12 @@ var pack = require('./package.json');
 var path = require('path');
 
 
+/* Add crypto */
+var ecdh = require('./crypto/ecdh');
+var ecdh_obj = ecdh.ECDH();
+var private_key = ecdh_obj.createPrivateKey();
+var public_key = ecdh_obj.createPublicKey();
+
 /* Config */
 var port = utils.normalizePort(process.env.PORT || config.port);
 var app = express();
@@ -131,7 +137,7 @@ chat.on('connection', function(conn) {
                 }
 
                 if(data.type == 'update') {
-                    return updateUser(conn.id, data.user);
+                    return updateUser(conn.id, data.user, data.public_key);
                 }
 
                 if(data.message.length > 768) {
@@ -139,7 +145,7 @@ chat.on('connection', function(conn) {
                     message = JSON.stringify(data);
                 }
 
-                if(data.type == 'pm') log('message', chalk.underline(clients[conn.id].un) + ' to ' + chalk.underline(data.extra) + ': ' + data.message);
+                if (data.type == 'pm') log('message', chalk.underline(clients[conn.id].un) + ' to ' + chalk.underline(data.extra) + ': ' + data.message);
                 else log('message', '[' + data.type.charAt(0).toUpperCase() + data.type.substring(1) + '] ' + chalk.underline(clients[conn.id].un) + ': ' + data.message);
 
                 handleSocket(clients[conn.id], message);
@@ -162,7 +168,7 @@ chat.on('connection', function(conn) {
 
 
 /* Functions */
-function updateUser(id, name) {
+function updateUser(id, name, public_key_user) {
     if(name.length > 2 && name.length < 17 && name.indexOf(' ') < 0 && !utils.checkUser(clients, name) && name.match(alphanumeric) && name != 'Console' && name != 'System') {
         if(clients[id].un == null) {
             clients[id].con.write(JSON.stringify({type:'server', info:'success'}));
@@ -197,7 +203,8 @@ function updateUser(id, name) {
 
 function handleSocket(user, message) {
     var data = JSON.parse(message);
-
+    log('[Message] ', message);
+    log('[User] ', user.un);
     data.id = user.id;
     data.user = user.un;
     data.type = s.escapeHTML(data.type);

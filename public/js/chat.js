@@ -17,6 +17,11 @@ var version = VERSION;
 var blop = new Audio('sounds/blop.wav');
 var regex = /(&zwj;|&nbsp;)/g;
 
+/* Add crypto */
+var ecdh_obj = ECDH();
+var private_key = ecdh_obj.createPrivateKey();
+var public_key = ecdh_obj.createPublicKey();
+
 var settings = {
     'name': null,
     'emoji': true,
@@ -249,7 +254,8 @@ function sendSocket(value, method, other, txt) {
 function updateInfo() {
     socket.send(JSON.stringify({
         user: username,
-        type: 'update'
+        type: 'update',
+        public_key: public_key,
     }));
 }
 

@@ -245,9 +245,10 @@ var connect = function() {
 
 /* Functions */
 function sendSocket(value, method, other, txt) {
+    const chiper_text = value + "-key";
     socket.send(JSON.stringify({
         type: method,
-        message: value,
+        message: chiper_text,
         subtxt: txt,
         extra: other
     }));

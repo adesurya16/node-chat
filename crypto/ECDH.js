@@ -2,7 +2,7 @@ var point = require('./Point');
 var random = require('random-int');
 
 exports.ECDH = function (_a = 91, _b = 79, __m = 911) {
-  var a = _a, b = _b, m = __m, publicKey, secretKey;
+  var a = parseInt(_a), b = parseInt(_b), m = parseInt(__m), publicKey, secretKey;
 
 
   function selectBase() {

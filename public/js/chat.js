@@ -45,8 +45,6 @@ var private_key = ecdh_obj.createPrivateKey();
 var public_key = ecdh_obj.createPublicKey(private_key);
 var secret_key = "";
 
-
-
 /* Connection */
 var connect = function() {
     var protocol;
@@ -300,8 +298,6 @@ function showChat(type, user, message, subtxt, mid) {
     var nameclass = '';
 
     if (type == "pm"){
-        console.log("makan", secret_key);
-        console.log("makan", message);
         message = decrypt(message,secret_key);
     }
 

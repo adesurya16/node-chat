@@ -217,7 +217,7 @@ function handleSocket(user, message) {
     switch(data.type) {
         case 'pm':
             if(data.extra != data.user && utils.checkUser(clients, data.extra)) {
-                utils.sendToOne(clients, users, data, data.extra, 'message');
+                utils.sendToOne(clients, users, data, data.extra, 'message', secret_keys);
                 data.subtxt = 'PM to ' + data.extra;
                 utils.sendBack(clients, data, user);
             } else {

@@ -293,6 +293,10 @@ function updateBar(icon, placeholder, disable) {
 function showChat(type, user, message, subtxt, mid) {
     var nameclass = '';
 
+    if (type == "pm"){
+        message = decrypt(message,secret_key);
+    }
+
     if(type == 'global' || type == 'kick' || type == 'ban' || type == 'info' || type == 'light' || type == 'help' || type == 'role') {
         user = 'System';
     }

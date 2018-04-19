@@ -19,7 +19,7 @@ var path = require('path');
 var ecdh = require('./crypto/ECDH');
 var ecdh_obj = ecdh.ECDH();
 var private_key = ecdh_obj.createPrivateKey();
-var public_key = ecdh_obj.createPublicKey();
+var public_key = ecdh_obj.createPublicKey(private_key);
 
 /* Config */
 var port = utils.normalizePort(process.env.PORT || config.port);
@@ -175,7 +175,9 @@ function updateUser(id, name, public_key_user) {
             clients[id].con.write(JSON.stringify({type:'server', info:'success', public_key_server: public_key}));
             uid++;
         }
-        secret_keys[clients[id].id] = ecdh_obj.createSecretKey(public_key_user);
+        secret_keys[clients[id].id] = ecdh_obj.createSecretKey(private_key,public_key_user);
+        log("[Private key] ", JSON.stringify(private_key));
+        log("[Public key] ", JSON.stringify(public_key_user));
         log("[Chiper key] ", JSON.stringify(secret_keys[clients[id].id]));
         users[clients[id].id].un = name;
         utils.sendToAll(clients, {

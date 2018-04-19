@@ -20,7 +20,8 @@ var regex = /(&zwj;|&nbsp;)/g;
 /* Add crypto */
 var ecdh_obj = ECDH();
 var private_key = ecdh_obj.createPrivateKey();
-var public_key = ecdh_obj.createPublicKey();
+var public_key = ecdh_obj.createPublicKey(private_key);
+var secret_key = "";
 
 var settings = {
     'name': null,
@@ -153,7 +154,8 @@ var connect = function() {
                     updateBar('mdi-content-send', 'Enter your message here', false);
                     connected = true;
                     settings.name = username;
-                    settings.secret_key = ecdh_obj.createSecretKey(data.public_key_server);
+                    secret_key = ecdh_obj.createSecretKey(private_key, data.public_key_server);
+                    settings.secret_key = secret_key;
                     localStorage.settings = JSON.stringify(settings);
                     break;
 
@@ -245,7 +247,7 @@ var connect = function() {
 
 /* Functions */
 function sendSocket(value, method, other, txt) {
-    const chiper_text = value + "-key";
+    const chiper_text = value + "-"+secret_key;
     socket.send(JSON.stringify({
         type: method,
         message: chiper_text,

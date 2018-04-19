@@ -13,7 +13,7 @@ Point = function (_x, _y) {
 }
 
 ECDH = function () {
-	var a = 91, b = 49, m = 105943, base, privateKey, publicKey, secretKey;
+	var a = 91, b = 79, m = 911, publicKey, secretKey;
 
 
 	function selectBase() {
@@ -34,6 +34,8 @@ ECDH = function () {
 
 		base.x = x;
 		base.y = y;
+
+		return base;
 	}
 
 	function mod(x, n) {
@@ -50,15 +52,19 @@ ECDH = function () {
 	}
 
 	function add(p, q) {
-		if (p.x == q.x && p.y == q.y) {
-			return doublePoint(p);
+		// if (p.x == q.x && p.y == q.y) {
+		//   return doublePoint(p);
+		// }
+
+		if (p.x == q.x) { // point in infinite
+			return Point(0, 0);
 		}
 
 		gradien = mod((p.y - q.y) * modInverse(p.x - q.x, m), m);
 		r = Point(0, 0);
 		r.x = mod(Math.pow(gradien, 2) - p.x - q.x, m);
 		r.y = mod(gradien * (p.x - r.x) - p.y, m);
-		// console.log(r.x);
+
 		return r;
 	}
 
@@ -82,29 +88,37 @@ ECDH = function () {
 	}
 
 	function createPrivateKey() {
-		selectBase();
 		privateKey = getRandomInt(1, m);
 		return privateKey;
 	}
 
-	function createPublicKey() {
-		i = 1;
+	function createPublicKey(_privateKey) {
+		var i = 1;
+		base = selectBase();
 		publicKey = base;
-		while (i < privateKey) {
+
+		while (i < _privateKey) {
 			publicKey = add(publicKey, base);
 			i++;
 		}
 
+		if (publicKey.y == 0) {
+			publicKey = add(publicKey, base);
+		}
 		return publicKey;
 	}
 
-	function createSecretKey(publicKey) {
-		i = 1;
-		secretKey = publicKey;
+	function createSecretKey(_privateKey, _publicKey) {
+		var i = 1;
+		secretKey = _publicKey;
 
-		while (i < privateKey) {
-			secretKey = add(secretKey, publicKey);
+		while (i < _privateKey) {
+			secretKey = add(secretKey, _publicKey);
 			i++;
+		}
+
+		if (secretKey.y == 0) {
+			secretKey = add(secretKey, _publicKey);
 		}
 
 		return secretKey;

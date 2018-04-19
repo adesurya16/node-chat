@@ -13,13 +13,7 @@ var utils = require('./lib/utils.js');
 var config = require('./config.json');
 var pack = require('./package.json');
 var path = require('path');
-
-
-/* Add crypto */
 var ecdh = require('./crypto/ECDH');
-var ecdh_obj = ecdh.ECDH();
-var private_key = ecdh_obj.createPrivateKey();
-var public_key = ecdh_obj.createPublicKey(private_key);
 
 /* Config */
 var port = utils.normalizePort(process.env.PORT || config.port);
@@ -138,7 +132,7 @@ chat.on('connection', function(conn) {
                 }
 
                 if(data.type == 'update') {
-                    return updateUser(conn.id, data.user, data.public_key);
+                    return updateUser(conn.id, data.user, data.public_key, data.ecc_equation);
                 }
 
                 if(data.message.length > 768) {
@@ -169,17 +163,22 @@ chat.on('connection', function(conn) {
 
 
 /* Functions */
-function updateUser(id, name, public_key_user) {
+function updateUser(id, name, public_key_user,ecc_equation) {
     if(name.length > 2 && name.length < 17 && name.indexOf(' ') < 0 && !utils.checkUser(clients, name) && name.match(alphanumeric) && name != 'Console' && name != 'System') {
-        if(clients[id].un == null) {
-            clients[id].con.write(JSON.stringify({type:'server', info:'success', public_key_server: public_key}));
-            uid++;
-        }
-        secret_keys[clients[id].id] = ecdh_obj.createSecretKey(private_key,public_key_user);
+        /* Add crypto */
+        var ecdh_obj = ecdh.ECDH(ecc_equation.a_paramater,ecc_equation.b_parameter,ecc_equation.m_parameter);
+        var private_key = ecdh_obj.createPrivateKey();
+        var public_key = ecdh_obj.createPublicKey(private_key);
+        var secret_point = ecdh_obj.createSecretKey(private_key, public_key_user);
+        secret_keys[clients[id].id] = secret_point.x+secret_point.y;
         log("[Private key] ", JSON.stringify(private_key));
         log("[Public key] ", JSON.stringify(public_key_user));
         log("[Chiper key] ", JSON.stringify(secret_keys[clients[id].id]));
         users[clients[id].id].un = name;
+        if(clients[id].un == null) {
+            clients[id].con.write(JSON.stringify({type:'server', info:'success', public_key_server: public_key}));
+            uid++;
+        }
         utils.sendToAll(clients, {
             type: 'server',
             info: clients[id].un == null ? 'connection' : 'update',
@@ -218,7 +217,7 @@ function handleSocket(user, message) {
     switch(data.type) {
         case 'pm':
             if(data.extra != data.user && utils.checkUser(clients, data.extra)) {
-                utils.sendToOne(clients, users, data, data.extra, 'message');
+                utils.sendToOne(clients, users, data, data.extra, 'message', secret_keys);
                 data.subtxt = 'PM to ' + data.extra;
                 utils.sendBack(clients, data, user);
             } else {

@@ -17,11 +17,6 @@ var version = VERSION;
 var blop = new Audio('sounds/blop.wav');
 var regex = /(&zwj;|&nbsp;)/g;
 
-/* Add crypto */
-var ecdh_obj = ECDH();
-var private_key = ecdh_obj.createPrivateKey();
-var public_key = ecdh_obj.createPublicKey(private_key);
-var secret_key = "";
 
 var settings = {
     'name': null,
@@ -31,15 +26,25 @@ var settings = {
     'sound': true,
     'desktop': false,
     'synthesis': false,
-    'recognition': false
+    'recognition': false,
+    'a_parameter': 91,
+    'b_parameter': 79,
+    'm_parameter': 911,
+    'private_key': 125
 };
-
 
 /* Config */
 emojione.ascii = true;
 emojione.imageType = 'png';
 emojione.unicodeAlt = false;
 document.getElementById('version').innerHTML = version;
+
+/* Add crypto */
+var ecdh_obj = ECDH(settings.a_parameter,settings.b_parameter,settings.m_parameter,settings.private_key);
+var private_key = ecdh_obj.createPrivateKey();
+var public_key = ecdh_obj.createPublicKey(private_key);
+var secret_key = "";
+
 
 
 /* Connection */
@@ -154,7 +159,8 @@ var connect = function() {
                     updateBar('mdi-content-send', 'Enter your message here', false);
                     connected = true;
                     settings.name = username;
-                    secret_key = ecdh_obj.createSecretKey(private_key, data.public_key_server);
+                    var secret_point = ecdh_obj.createSecretKey(private_key, data.public_key_server);
+                    secret_key = secret_point.x + secret_point.y;
                     settings.secret_key = secret_key;
                     localStorage.settings = JSON.stringify(settings);
                     break;
@@ -261,6 +267,11 @@ function updateInfo() {
         user: username,
         type: 'update',
         public_key: public_key,
+        ecc_equation: {
+            a_parameter : settings.a_parameter,
+            b_parameter : settings.b_parameter,
+            m_parameter : settings.m_parameter,
+        }
     }));
 }
 
@@ -281,6 +292,10 @@ function updateBar(icon, placeholder, disable) {
 
 function showChat(type, user, message, subtxt, mid) {
     var nameclass = '';
+
+    if (type == "pm"){
+        message = decrypt(message,secret_key);
+    }
 
     if(type == 'global' || type == 'kick' || type == 'ban' || type == 'info' || type == 'light' || type == 'help' || type == 'role') {
         user = 'System';
@@ -610,7 +625,39 @@ $(document).ready(function() {
         settings.inline = document.getElementById('inline').checked;
         localStorage.settings = JSON.stringify(settings);
     });
-        
+    
+    $('#private-key').bind('change', function() {
+        settings.private_key = document.getElementById('private-key').value;
+        ecdh_obj = ECDH(settings.a_parameter, settings.b_parameter, settings.m_parameter, settings.private_key);
+        private_key = ecdh_obj.createPrivateKey();
+        public_key = ecdh_obj.createPublicKey(private_key);
+        localStorage.settings = JSON.stringify(settings);
+    });
+    
+    $('#a-parameter').bind('change', function() {
+        settings.a_parameter = parseInt(document.getElementById('a-parameter').value);
+        ecdh_obj = ECDH(settings.a_parameter, settings.b_parameter, settings.m_parameter, settings.private_key);
+        private_key = ecdh_obj.createPrivateKey();
+        public_key = ecdh_obj.createPublicKey(private_key);
+        localStorage.settings = JSON.stringify(settings);
+    });
+    
+    $('#b-parameter').bind('change', function() {
+        settings.b_parameter = document.getElementById('b-parameter').value;
+        ecdh_obj = ECDH(settings.a_parameter, settings.b_parameter, settings.m_parameter, settings.private_key);
+        private_key = ecdh_obj.createPrivateKey();
+        public_key = ecdh_obj.createPublicKey(private_key);
+        localStorage.settings = JSON.stringify(settings);
+    });
+    
+    $('#m-parameter').bind('change', function() {
+        settings.m_parameter = document.getElementById('m-parameter').value;
+        ecdh_obj = ECDH(settings.a_parameter, settings.b_parameter, settings.m_parameter, settings.private_key);
+        private_key = ecdh_obj.createPrivateKey();
+        public_key = ecdh_obj.createPublicKey(private_key);
+        localStorage.settings = JSON.stringify(settings);
+    });
+    
     $('#desktop').bind('change', function() {
         settings.desktop = document.getElementById('desktop').checked;
         localStorage.settings = JSON.stringify(settings);

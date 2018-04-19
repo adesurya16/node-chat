@@ -253,7 +253,13 @@ var connect = function() {
 
 /* Functions */
 function sendSocket(value, method, other, txt) {
-    const chiper_text = value + "-"+secret_key;
+    const chiper_text = encrypt(value,secret_key);
+    console.log({
+        type: method,
+        message: chiper_text,
+        subtxt: txt,
+        extra: other
+    });
     socket.send(JSON.stringify({
         type: method,
         message: chiper_text,
@@ -294,6 +300,8 @@ function showChat(type, user, message, subtxt, mid) {
     var nameclass = '';
 
     if (type == "pm"){
+        console.log("makan", secret_key);
+        console.log("makan", message);
         message = decrypt(message,secret_key);
     }
 

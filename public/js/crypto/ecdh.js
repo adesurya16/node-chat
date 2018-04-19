@@ -12,9 +12,8 @@ Point = function (_x, _y) {
 	};
 }
 
-ECDH = function () {
-	var a = 91, b = 79, m = 911, publicKey, secretKey;
-
+ECDH = function (_a = 91, _b = 79, __m = 911, private_key) {
+	var a = parseInt(_a), b = parseInt(_b), m = parseInt(__m), publicKey, secretKey;
 
 	function selectBase() {
 		base = Point(0, 0);
@@ -88,8 +87,12 @@ ECDH = function () {
 	}
 
 	function createPrivateKey() {
-		privateKey = getRandomInt(1, m);
-		return privateKey;
+		if(private_key){
+			return parseInt(private_key);
+		} else {
+			privateKey = getRandomInt(1, m);
+			return privateKey;
+		}
 	}
 
 	function createPublicKey(_privateKey) {

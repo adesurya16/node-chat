@@ -1,4 +1,4 @@
-exports.Toolkit(){
+exports.Toolkit = function(){
 
     function roundFunction(roundKey,halfblock){
         return transposition(roundKey,subtitution(roundKey,halfblock));
@@ -136,7 +136,7 @@ exports.Toolkit(){
     return {
         roundFunction : roundFunction,
         subtitution : subtitution,
-        transportation : transportation,
+        transposition : transposition,
         roundKey : roundKey,
         xorFunction : xorFunction
     };

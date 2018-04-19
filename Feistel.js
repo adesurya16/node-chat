@@ -1,24 +1,17 @@
 exports.Feistel = function(roundKey){
 
-    var roundkey = [];
-    for(var i = 0;i < nRound;i++){
-        roundkey[i] = [];
-        for(var j = 0;j< 8;j++){
-            roundkey[i][j] = [];
-            for(var k = 0;k < 8;k++){
-                roundkey[i][j][k] = roundKey[i][j][k];
-            }
-        }
-    }
+    var roundkey = roundKey;
     
     function encrypt(block){
+
         var nextLeft = [];
         for(var i=0;i<8;i++){
-            nextleft[i] = [];
+            nextLeft[i] = [];
             for(var j=0;j<8;j++){
-                nextleft[i][j] = block[1][i][j];
+                nextLeft[i][j] = block[1][i][j];
             }
         }
+
         var nextRight = [];
         for(var i=0;i<8;i++){
             nextRight[i] = [];
@@ -31,27 +24,36 @@ exports.Feistel = function(roundKey){
         var key = [];
         for(var i=0;i<8;i++){
             key[i] = [];
+            for(var j=0;j<8;j++){
+                key[i][j] = 0;
+            }
         }
         
         //init currentRight
         var currentRight = [];
         for(var i=0;i<8;i++){
             currentRight[i] = [];
+            for(var j=0;j<8;j++){
+                currentRight[i][j] = 0;                    
+            }
         }
 
         //init currentLeft
         var currentLeft = [];
         for(var i=0;i<8;i++){
             currentLeft[i] = [];
+            for(var j=0;j<8;j++){
+                currentLeft[i][j] = 0;                                    
+            }
         }
 
-        for(var i = 0;i<roundKey.length;i++){
-            copymatrix(key,roundkey[i]);
-            copymatrix(currentRight,nextLeft);
-            copymatrix(currentLeft,nextRight);
+        for(var i = 0;i<roundkey.length;i++){
+            // key = copymatrix(key,roundkey[i]);
+            currentRight = copymatrix(currentRight,nextLeft);
+            currentLeft = copymatrix(currentLeft,nextRight);
 
-            copymatrix(nextRight,currentRight);
-            copymatrix(nextLeft,xorFunction(currentLeft,roundFunction(key,currentRight)));
+            nextRight = copymatrix(nextRight,currentRight);
+            nextLeft = copymatrix(nextLeft,xorFunction(currentLeft,roundFunction(roundkey[i],currentRight)));
         }
         var res = [];
         res[0] = nextLeft;
@@ -79,27 +81,37 @@ exports.Feistel = function(roundKey){
         var key = [];
         for(var i=0;i<8;i++){
             key[i] = [];
+            for(var j=0;j<8;j++){
+                key[i][j] = 0;
+            }
         }
         
         //init currentRight
         var currentRight = [];
         for(var i=0;i<8;i++){
             currentRight[i] = [];
+            for(var j=0;j<8;j++){
+                currentRight[i][j] = 0;                    
+            }
         }
 
         //init currentLeft
         var currentLeft = [];
         for(var i=0;i<8;i++){
             currentLeft[i] = [];
+            for(var j=0;j<8;j++){
+                currentLeft[i][j] = 0;                                    
+            }
         }
 
-        for(var i = roundKey.length-1;i>=0;i--){
-            copymatrix(key,roundkey[i]);
-            copymatrix(currentRight,nextLeft);
-            copymatrix(currentLeft,nextRight);
+        for(var i = roundkey.length-1;i>=0;i--){
+            // console.log(roundkey)
+            // key = copymatrix(key,roundkey[i]);
+            currentRight = copymatrix(currentRight,nextLeft);
+            currentLeft = copymatrix(currentLeft,nextRight);
 
-            copymatrix(nextRight,currentRight);
-            copymatrix(nextLeft,xorFunction(currentLeft,roundFunction(key,currentRight)));
+            nextRight = copymatrix(nextRight,currentRight);
+            currentLeft = copymatrix(nextLeft,xorFunction(currentLeft,roundFunction(roundkey[i],currentRight)));
         }
         var res = [];
         res[0] = nextLeft;
@@ -225,12 +237,12 @@ exports.Feistel = function(roundKey){
         return matrix;
     }
 
-    function xorFunction(l, r){
+    function xorFunction(left, right){
         matrix = [];
         for(var i = 0;i < 8;i++){
             matrix[i] = [];
             for(var j = 0;j < 8;j++){
-                if (l[i][j] == r[i][j]){
+                if (left[i][j] == right[i][j]){
                     matrix[i][j] = 1;
                 }else{
                     matrix[i][j] = 0;
@@ -243,11 +255,12 @@ exports.Feistel = function(roundKey){
     
 
     function copymatrix(c1,c2){
-        for(var i = 0;i< 8;i++){
+        for(var i = 0;i < 8;i++){
             for(var j = 0;j < 8;j++){
                 c1[i][j] = c2[i][j];
             }
         }
+        return c1;
     }
 
     return {

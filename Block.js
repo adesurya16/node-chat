@@ -4,14 +4,14 @@ exports.Block = function(){
     function modeByte(valueByte){
         // byte == char
         // assert
-        if (valueByteArray.length > 16){
+        if (valueByte.length > 16){
             console.log("WRONG SIZE...!!!");
             return false;
         }else{
-            var len = valueByteArray.length;
-            var bitStream;
+            var len = valueByte.length;
+            var bitstream = "";
             for(var i=0;i<len;i++){
-                bitStream += intToBin(valueByte[i]);    
+                bitstream += intToBin(valueByte[i]);    
             }
             
             // add padding
@@ -20,7 +20,7 @@ exports.Block = function(){
             }
             
             // assert
-            if (bitStream.length % 8 != 0){
+            if (bitstream.length % 8 != 0){
                 return false;
             }
 
@@ -36,11 +36,11 @@ exports.Block = function(){
                 }
             }
 
-            for(var i = 0;i<bitStream.length;i++){
+            for(var i = 0;i<bitstream.length;i++){
                 if (bitstream[i] == '0'){
-                    bit[i % 8][Math.floor(i/64)][(i%64) / 8] = 0;                    
+                    bit[Math.floor(i/64)][Math.floor((i%64) / 8)][i % 8] = 0;                    
                 }else{
-                    bit[i % 8][Math.floor(i/64)][(i%64) / 8] = 1;                                        
+                    bit[Math.floor(i/64)][Math.floor((i%64) / 8)][i % 8] = 1;                                        
                 }
             }
 
@@ -54,7 +54,7 @@ exports.Block = function(){
         var bitstream = '';
         var byte = [];
         for(var i=0;i<len;i++){
-            if (bit[i % 8][Math.floor(i/64)][(i%64) / 8] == 1) {
+            if (bit[Math.floor(i/64)][Math.floor((i%64) / 8)][i % 8] == 1) {
                 bitstream = bitstream + '1';
             }else{
                 bitstream = bitstream + '0';                
@@ -99,7 +99,6 @@ exports.Block = function(){
     }
 
     return {
-        valueByteArray : valueByteArray,
         modeByte : modeByte,
         modeBit : modeBit
     };

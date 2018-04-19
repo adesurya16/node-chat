@@ -1,9 +1,9 @@
 var block = require('./Block');
-var toolkit = require('/Toolkit');
-var feistel = require('/Feistel');
+var toolkit = require('./Toolkit');
+var feistel = require('./Feistel');
 
-exports.Ecb(key){
-    var feistelObj = feistel(key);
+exports.Ecb = function(key){
+    var feistelObj = feistel.Feistel(key);
     blockObj = block.Block();
     toolkitObj = toolkit.Toolkit();
 
@@ -27,4 +27,8 @@ exports.Ecb(key){
         return blockByte;
     }
 
+    return {
+        encrypt : encrypt,
+        decrypt : decrypt
+    };
 }

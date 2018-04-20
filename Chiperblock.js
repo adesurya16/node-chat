@@ -13,6 +13,7 @@ exports.Chiperblock = function(){
                 // console.log(encrypted);
                 block = '';
                 res += toCharArray(encrypted);
+                // console.log("res :");
                 // console.log(res);
             }
         }

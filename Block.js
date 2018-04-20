@@ -50,19 +50,21 @@ exports.Block = function(){
 
     function modeBit(valueBit){
         //value bit matrix
+
         var len = (valueBit[0].length * valueBit[0][0].length)*2
-        // console.log(len);
+        // console.log("valuebit : ");
+        // console.log(valueBit);
         var bitstream = '';
         var byte = [];
         for(var i=0;i<len;i++){
-            if (bit[Math.floor(i/64)][Math.floor((i%64) / 8)][i % 8] == 1) {
+            if (valueBit[Math.floor(i/64)][Math.floor((i%64) / 8)][i % 8] == 1) {
                 bitstream = bitstream + '1';
             }else{
                 bitstream = bitstream + '0';                
             }
 
             if (bitstream.length % 8 == 0){
-                // console.log(bitstream);
+                // console.log("bitstream " + bitstream);
                 byte.push(binToInt(bitstream));
                 bitstream = '';
             }

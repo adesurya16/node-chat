@@ -45,8 +45,6 @@ var private_key = ecdh_obj.createPrivateKey();
 var public_key = ecdh_obj.createPublicKey(private_key);
 var secret_key = "";
 
-
-
 /* Connection */
 var connect = function() {
     var protocol;
@@ -253,7 +251,13 @@ var connect = function() {
 
 /* Functions */
 function sendSocket(value, method, other, txt) {
-    const chiper_text = value + "-"+secret_key;
+    const chiper_text = encrypt(value,secret_key);
+    console.log({
+        type: method,
+        message: chiper_text,
+        subtxt: txt,
+        extra: other
+    });
     socket.send(JSON.stringify({
         type: method,
         message: chiper_text,

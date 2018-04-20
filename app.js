@@ -14,6 +14,7 @@ var config = require('./config.json');
 var pack = require('./package.json');
 var path = require('path');
 var ecdh = require('./crypto/ECDH');
+var _ = require('lodash');
 
 /* Config */
 var port = utils.normalizePort(process.env.PORT || config.port);
@@ -29,7 +30,7 @@ var rateInterval = [];
 
 var chat = sockjs.createServer();
 var clients = [];
-var secret_keys = [];
+var secret_keys = {};
 var users = {};
 var bans = [];
 var uid = 1;
@@ -170,10 +171,10 @@ function updateUser(id, name, public_key_user,ecc_equation) {
         var private_key = ecdh_obj.createPrivateKey();
         var public_key = ecdh_obj.createPublicKey(private_key);
         var secret_point = ecdh_obj.createSecretKey(private_key, public_key_user);
-        secret_keys[clients[id].id] = secret_point.x+secret_point.y;
+        secret_keys[clients[id].id.toString()] = secret_point.x+secret_point.y;
         log("[Private key] ", JSON.stringify(private_key));
         log("[Public key] ", JSON.stringify(public_key_user));
-        log("[Chiper key] ", JSON.stringify(secret_keys[clients[id].id]));
+        log("[Chiper key] ", JSON.stringify(secret_keys[clients[id].id.toString()]));
         users[clients[id].id].un = name;
         if(clients[id].un == null) {
             clients[id].con.write(JSON.stringify({type:'server', info:'success', public_key_server: public_key}));
@@ -217,9 +218,10 @@ function handleSocket(user, message) {
     switch(data.type) {
         case 'pm':
             if(data.extra != data.user && utils.checkUser(clients, data.extra)) {
+                var temp = _.clone(data,true);
                 utils.sendToOne(clients, users, data, data.extra, 'message', secret_keys);
                 data.subtxt = 'PM to ' + data.extra;
-                utils.sendBack(clients, data, user);
+                utils.sendBack(clients, temp, user);
             } else {
                 data.type = 'light';
                 data.subtxt = null;

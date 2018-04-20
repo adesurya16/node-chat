@@ -9,8 +9,10 @@ http.createServer(function (req, res) {
   res.write("PlainText : " + PlainText + " , Key : " + key + "</br>");
   console.log("PlainText : " + PlainText + " , Key : " + key );
   // res.write("ChiperText (hasil encrypt) : " + cp.ECBmodeEncrypt(PlainText,key) + "</br>");
-  console.log("ChiperText (hasil encrypt) : " + cp.ECBmodeEncrypt(PlainText,key));
+  var cipher = cp.ECBmodeEncrypt(PlainText,key);
+  console.log("ChiperText (hasil encrypt) : " + cipher);
   // res.write("PlainText (hasil decrypt) : " + cp.ECBmodeDecrypt(PlainText,key) + "</br>");
-  // console.log("PlainText (hasil decrypt) : " + cp.ECBmodeDecrypt(PlainText,key));
+  var plain = cp.ECBmodeDecrypt(cipher,key)
+  console.log("PlainText (hasil decrypt) : " + plain);
   res.end();
 }).listen(8000);

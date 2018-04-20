@@ -10,7 +10,7 @@ exports.Toolkit = function(){
         var idx = 0;
         for(var i=0;i<8;i++){
             matrix[i] = [];
-            for(var j;j<8;j++){
+            for(var j = 0;j<8;j++){
                 matrix[i][j] = 0;
                 idx = roundKey[(i + 1) % 8][j];
                 matrix[i][j] = (matrix[i][j] + halfblock[Math.floor(idx / 8)][idx % 8]) % 2;
@@ -30,7 +30,7 @@ exports.Toolkit = function(){
         
         // copy matrix
         var copy = [];
-        for(var i;i<8;i++){
+        for(var i = 0;i<8;i++){
             copy[i] = [];
             for(var j;j<8;j++){
                 copy[i][j] = halfblock[i][j];
@@ -40,42 +40,42 @@ exports.Toolkit = function(){
         // shift x
         var shift = [];
         var sum = 0;
-        for(var i;i<8;i++){
+        for(var i = 0;i<8;i++){
             shift[i] = 0;
             sum = 0;
-            for(var j;j<8;j++){
+            for(var j = 0;j<8;j++){
                 sum = (sum + roundKey[i][j])  % 8; 
             }
             shift[i] = sum;
         }
 
         matrix = []
-        for(var i;i<8;i++){
+        for(var i = 0;i<8;i++){
             matrix[i] = [];
-            for(var j;j<8;j++){
+            for(var j = 0;j<8;j++){
                 matrix[i][j] = copy[i][(j+8-shift[i]) % 8]
             }
         }
 
         //copy matrix
-        for(var i;i<8;i++){
+        for(var i = 0;i<8;i++){
             copy[i] = [];
-            for(var j;j<8;j++){
+            for(var j = 0;j<8;j++){
                 copy[i][j] = halfblock[i][j];
             }
         }
 
         // shift y
-        for(var i;i<8;i++){
+        for(var i = 0;i<8;i++){
             sum = 0;
-            for(var j;j<8;j++){
+            for(var j = 0;j<8;j++){
                 sum = (sum + roundKey[i][j]) % 8;
             }
             shift[i] = sum;
         }
         
-        for(var i;i<8;i++){
-            for(var j;j<8;j++){
+        for(var i = 0;i<8;i++){
+            for(var j = 0;j<8;j++){
                 matrix[i][j] = copy[(i + 8 - shift[j]) % 8][j];
             }
         }

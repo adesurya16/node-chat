@@ -10,9 +10,10 @@ exports.Chiperblock = function(){
                 // console.log(toByteArray(block));
                 // console.log(block);
                 var encrypted = ecbObj.encrypt(toByteArray(block));
-                console.log(encrypted);
+                // console.log(encrypted);
                 block = '';
                 res += toCharArray(encrypted);
+                // console.log(res);
             }
         }
         return res;
@@ -25,9 +26,9 @@ exports.Chiperblock = function(){
         for(var i=0;i<text.length;i++){
             block += text[i];
             if (((i+1) % 16==0) || (i+1) == text.length){
-                var encrypted = ecbObj.decrypt(toByteArray(block));
+                var decrypted = ecbObj.decrypt(toByteArray(block));
                 block = '';
-                res += toCharArray(encrypted);
+                res += toCharArray(decrypted);
             }
         }
         return res;

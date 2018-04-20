@@ -3,7 +3,7 @@ exports.Feistel = function(rk){
     var roundkey = roundKey(rk);
     
     function encrypt(block){
-
+        // console.log(block);
         var nextLeft = [];
         for(var i=0;i<8;i++){
             nextLeft[i] = [];
@@ -54,14 +54,19 @@ exports.Feistel = function(rk){
 
             nextRight = copymatrix(nextRight,currentRight);
             // console.log(roundkey[i]);
+            // console.log("------------------");
             // console.log(currentRight);
             // console.log(roundFunction(roundkey[i],currentRight));
             nextLeft = copymatrix(nextLeft,xorFunction(currentLeft,roundFunction(roundkey[i],currentRight)));
         }
+        // console.log("##############");
         var res = [];
         res[0] = nextLeft;
         res[1] = nextRight;
-        console.log(res);
+        // console.log(res[0]);
+        // console.log("=----------------");
+        // console.log(res[1]);        
+        // console.log("=----------------");
         return res;
     }
     
@@ -119,7 +124,11 @@ exports.Feistel = function(rk){
         }
         var res = [];
         res[0] = nextLeft;
+        // console.log(res[0]);
+        // console.log("-----------------------");
         res[1] = nextRight;
+        // console.log(res[1]);
+        // console.log("-----------------------");                
         return res;
     }
 

@@ -16,9 +16,13 @@ exports.Ecb = function(key){
         }
         
         var blockBit = blockObj.modeByte(blockByte);
-        // console.log(blockBit);
+        console.log(blockBit);
         var encrypt = feistelObj.encrypt(blockBit);
+        // console.log("enc");
+        // console.log(encrypt);
         var chiperByte = blockObj.modeBit(encrypt);
+        // console.log("chiperbyte");
+        // console.log(chiperByte);
         return chiperByte;
     }
 

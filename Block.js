@@ -50,7 +50,8 @@ exports.Block = function(){
 
     function modeBit(valueBit){
         //value bit matrix
-        var len = (valueBit[0].length + valueBit[0][0].length)*2
+        var len = (valueBit[0].length * valueBit[0][0].length)*2
+        // console.log(len);
         var bitstream = '';
         var byte = [];
         for(var i=0;i<len;i++){
@@ -61,11 +62,11 @@ exports.Block = function(){
             }
 
             if (bitstream.length % 8 == 0){
+                // console.log(bitstream);
                 byte.push(binToInt(bitstream));
                 bitstream = '';
             }
         }
-        
         return byte;
     }
 

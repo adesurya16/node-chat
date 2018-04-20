@@ -1,7 +1,7 @@
 function encrypt(plaintext, key) {
-  return plaintext + "-" + key;
+  return Chiperblock.ECBmodeEncrypt(PlainText,key);
 }
 
 function decrypt(chipertext, key) {
-  return chipertext.replace("-" + key,"");
+  return Chiperblock.ECBmodeDecrypt(PlainText,key);
 }

@@ -1,10 +1,8 @@
 var block = require('./Block');
-var toolkit = require('./Toolkit');
 var feistel = require('./Feistel');
 
 exports.Ecb = function(key){
     var blockObj = block.Block();
-    var toolkitObj = toolkit.Toolkit();
     var feistelObj = feistel.Feistel(key);
 
     function encrypt(blockByte){

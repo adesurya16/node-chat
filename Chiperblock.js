@@ -7,7 +7,10 @@ exports.Chiperblock = function(){
         for(var i=0;i<text.length;i++){
             block += text[i];
             if (((i+1) % 16==0) || (i+1) == text.length){
+                // console.log(toByteArray(block));
+                // console.log(block);
                 var encrypted = ecbObj.encrypt(toByteArray(block));
+                console.log(encrypted);
                 block = '';
                 res += toCharArray(encrypted);
             }

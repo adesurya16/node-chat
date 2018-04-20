@@ -1,6 +1,6 @@
-exports.Feistel = function(roundKey){
+exports.Feistel = function(rk){
 
-    var roundkey = roundKey;
+    var roundkey = roundKey(rk);
     
     function encrypt(block){
 
@@ -53,20 +53,24 @@ exports.Feistel = function(roundKey){
             currentLeft = copymatrix(currentLeft,nextRight);
 
             nextRight = copymatrix(nextRight,currentRight);
+            // console.log(roundkey[i]);
+            // console.log(currentRight);
+            // console.log(roundFunction(roundkey[i],currentRight));
             nextLeft = copymatrix(nextLeft,xorFunction(currentLeft,roundFunction(roundkey[i],currentRight)));
         }
         var res = [];
         res[0] = nextLeft;
         res[1] = nextRight;
+        console.log(res);
         return res;
     }
     
     function decrypt(block){
         var nextLeft = [];
         for(var i=0;i<8;i++){
-            nextleft[i] = [];
+            nextLeft[i] = [];
             for(var j=0;j<8;j++){
-                nextleft[i][j] = block[1][i][j];
+                nextLeft[i][j] = block[1][i][j];
             }
         }
         var nextRight = [];
@@ -129,7 +133,7 @@ exports.Feistel = function(roundKey){
         var idx = 0;
         for(var i=0;i<8;i++){
             matrix[i] = [];
-            for(var j;j<8;j++){
+            for(var j=0;j<8;j++){
                 matrix[i][j] = 0;
                 idx = roundKey[(i + 1) % 8][j];
                 matrix[i][j] = (matrix[i][j] + halfblock[Math.floor(idx / 8)][idx % 8]) % 2;
@@ -138,10 +142,11 @@ exports.Feistel = function(roundKey){
                 idx = roundKey[i][(j + 1) % 8];
                 matrix[i][j] = (matrix[i][j] + halfblock[Math.floor(idx / 8)][idx % 8]) % 2;
                 idx = roundKey[i][(j + 7) % 8];
-                matrix[i][j] = (matrix[i][j] + halfblock[Math.floor(idx / 8)][idx % 8]) % 2;                                                                
+                matrix[i][j] = (matrix[i][j] + halfblock[Math.floor(idx / 8)][idx % 8]) % 2;
+                // console.log(matrix[i][j]);                                                                
             }
         }
-
+        // console.log(matrix);
         return matrix;
     }
 
@@ -149,9 +154,9 @@ exports.Feistel = function(roundKey){
         
         // copy matrix
         var copy = [];
-        for(var i;i<8;i++){
+        for(var i=0;i<8;i++){
             copy[i] = [];
-            for(var j;j<8;j++){
+            for(var j=0;j<8;j++){
                 copy[i][j] = halfblock[i][j];
             }
         }
@@ -159,46 +164,46 @@ exports.Feistel = function(roundKey){
         // shift x
         var shift = [];
         var sum = 0;
-        for(var i;i<8;i++){
+        for(var i=0;i<8;i++){
             shift[i] = 0;
             sum = 0;
-            for(var j;j<8;j++){
+            for(var j=0;j<8;j++){
                 sum = (sum + roundKey[i][j])  % 8; 
             }
             shift[i] = sum;
         }
 
         matrix = []
-        for(var i;i<8;i++){
+        for(var i=0;i<8;i++){
             matrix[i] = [];
-            for(var j;j<8;j++){
+            for(var j=0;j<8;j++){
                 matrix[i][j] = copy[i][(j+8-shift[i]) % 8]
             }
         }
 
         //copy matrix
-        for(var i;i<8;i++){
+        for(var i=0;i<8;i++){
             copy[i] = [];
-            for(var j;j<8;j++){
+            for(var j=0;j<8;j++){
                 copy[i][j] = halfblock[i][j];
             }
         }
 
         // shift y
-        for(var i;i<8;i++){
+        for(var i=0;i<8;i++){
             sum = 0;
-            for(var j;j<8;j++){
+            for(var j=0;j<8;j++){
                 sum = (sum + roundKey[i][j]) % 8;
             }
             shift[i] = sum;
         }
         
-        for(var i;i<8;i++){
-            for(var j;j<8;j++){
+        for(var i=0;i<8;i++){
+            for(var j=0;j<8;j++){
                 matrix[i][j] = copy[(i + 8 - shift[j]) % 8][j];
             }
         }
-
+        // console.log(matrix);
         return matrix;
     }
 

@@ -61,7 +61,7 @@ exports.Block = function(){
             }
 
             if (bitstream.length % 8 == 0){
-                byte.push(BinToInt())
+                byte.push(binToInt(bitstream));
                 bitstream = '';
             }
         }
@@ -86,7 +86,7 @@ exports.Block = function(){
         return res;
     }
 
-    function BinToInt(bin){
+    function binToInt(bin){
         var res = 0;
         var pangkat = 1;
         for(var i = 7;i >=0;i--){

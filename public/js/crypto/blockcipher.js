@@ -1,4 +1,4 @@
-exports.Toolkit = function(){
+Toolkit = function(){
 
     function roundFunction(roundKey,halfblock){
         return transposition(roundKey,subtitution(roundKey,halfblock));
@@ -142,7 +142,7 @@ exports.Toolkit = function(){
     };
 }
 
-exports.Feistel = function(rk){
+Feistel = function(rk){
 
     var roundkey = roundKey(rk);
     
@@ -429,7 +429,7 @@ exports.Feistel = function(rk){
 }
 
 
-exports.Block = function(){
+Block = function(){
     // var valueByteArray = valueByte;
     
     function modeByte(valueByte){
@@ -538,7 +538,7 @@ exports.Block = function(){
     };
 }
 
-exports.Ecb = function(key){
+Ecb = function(key){
     var blockObj = Block();
     var feistelObj = Feistel(key);
 
@@ -578,7 +578,7 @@ exports.Ecb = function(key){
     };
 }
 
-exports.Chiperblock = function(){
+Chiperblock = function(){
     function ECBmodeEncrypt(text,key){
         ecbObj = Ecb(key);
         var block = '';

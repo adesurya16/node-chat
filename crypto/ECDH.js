@@ -85,7 +85,6 @@ exports.ECDH = function (_a = 91, _b = 79, __m = 911) {
     var i = 1;
     base = selectBase();
     publicKey = base;
-
     while (i < _privateKey) {
       publicKey = add(publicKey, base);
       i++;
@@ -94,6 +93,7 @@ exports.ECDH = function (_a = 91, _b = 79, __m = 911) {
     if (publicKey.y == 0) {
       publicKey = add(publicKey, base);
     }
+
     return publicKey;
   }
 

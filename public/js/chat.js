@@ -252,12 +252,6 @@ var connect = function() {
 /* Functions */
 function sendSocket(value, method, other, txt) {
     const chiper_text = encrypt(value,secret_key);
-    console.log({
-        type: method,
-        message: chiper_text,
-        subtxt: txt,
-        extra: other
-    });
     socket.send(JSON.stringify({
         type: method,
         message: chiper_text,

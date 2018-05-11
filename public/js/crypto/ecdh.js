@@ -5,10 +5,12 @@ function getRandomInt(min, max) {
 Point = function (_x, _y) {
 	x = _x;
 	y = _y;
+	inf = false;
 
 	return {
 		x: x,
-		y: y
+		y: y,
+		inf: inf
 	};
 }
 
@@ -51,13 +53,38 @@ ECDH = function (_a = 91, _b = 79, __m = 911, private_key) {
 	}
 
 	function add(p, q) {
-		// if (p.x == q.x && p.y == q.y) {
-		//   return doublePoint(p);
-		// }
-
-		if (p.x == q.x) { // point in infinite
-			return Point(0, 0);
+		if (p.x == q.x && p.y == q.y) {
+		  return doublePoint(p);
 		}
+
+		if (p.inf && q.inf) { // point in infinite
+			point = Point(0, 0);
+			point.inf = true;
+			return point;
+		}
+		else if (p.inf) {
+			return q;
+		}
+		else if(q.inf) {
+			return p;
+		}
+
+		if (p.x == q.x) {
+			point = Point(0, 0);
+			point.inf = true;
+			return point;
+		}
+
+		// if (p.x == 0 && p.y == 0 && q.x == 0 && q.y == 0){
+	 //      return Point(0, 0);
+	 //    }
+	    // if (p.x == 0 && p.y == 0) {
+	    //   return q;
+	    // }
+
+	    // if (q.x == 0 && q.y == 0) {
+	    //   return p;
+	    // }
 
 		gradien = mod((p.y - q.y) * modInverse(p.x - q.x, m), m);
 		r = Point(0, 0);
@@ -86,6 +113,21 @@ ECDH = function (_a = 91, _b = 79, __m = 911, private_key) {
 		return r;
 	}
 
+	function times(a, p) {
+	    if (a == 0) {
+	      return Point(0, 0);
+	    }
+	    else if (a == 1) {
+	      return p;
+	    }
+	    else if (mod(a, 2) == 0) {
+	      return times(a / 2, doublePoint(p));
+	    }
+	    else {
+	      return add(times(a - 1, p), p);
+	    }
+	  }
+
 	function createPrivateKey() {
 		if(private_key){
 			return parseInt(private_key);
@@ -98,32 +140,28 @@ ECDH = function (_a = 91, _b = 79, __m = 911, private_key) {
 	function createPublicKey(_privateKey) {
 		var i = 1;
 		base = selectBase();
-		publicKey = base;
+		publicKey = times(_privateKey, base);
 
-		while (i < _privateKey) {
-			publicKey = add(publicKey, base);
-			i++;
-		}
+		// while (i < _privateKey) {
+		// 	publicKey = add(publicKey, base);
+		// 	i++;
+		// }
 
-		if (publicKey.y == 0) {
-			publicKey = add(publicKey, base);
-		}
+		// if (publicKey.y == 0) {
+		// 	publicKey = add(publicKey, base);
+		// }
 
 		return publicKey;
 	}
 
 	function createSecretKey(_privateKey, _publicKey) {
 		var i = 1;
-		secretKey = _publicKey;
+		secretKey = times(_privateKey, _publicKey);
 
-		while (i < _privateKey) {
-			secretKey = add(secretKey, _publicKey);
-			i++;
-		}
-
-		if (secretKey.y == 0) {
-			secretKey = add(secretKey, _publicKey);
-		}
+		// while (i < _privateKey) {
+		// 	secretKey = add(secretKey, _publicKey);
+		// 	i++;
+		// }
 
 		return secretKey;
 	}

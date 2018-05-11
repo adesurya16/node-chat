@@ -43,7 +43,7 @@ ECDH = function (_a = 91, _b = 79, __m = 911, private_key) {
 
 	function modInverse(a, _m) {
 		a = mod(a, _m);
-		for (i = 1; i < m; i++) {
+		for (i = 1; i < _m; i++) {
 			if (mod((a * i), _m) == 1) {
 				return i;
 			}
@@ -108,6 +108,7 @@ ECDH = function (_a = 91, _b = 79, __m = 911, private_key) {
 		if (publicKey.y == 0) {
 			publicKey = add(publicKey, base);
 		}
+
 		return publicKey;
 	}
 

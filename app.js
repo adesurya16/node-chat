@@ -173,7 +173,7 @@ function updateUser(id, name, public_key_user,ecc_equation) {
         var secret_point = ecdh_obj.createSecretKey(private_key, public_key_user);
         secret_keys[clients[id].id.toString()] = secret_point.x+secret_point.y;
         log("[Private key] ", JSON.stringify(private_key));
-        log("[Public key] ", JSON.stringify(public_key_user));
+        log("[Public key] ", JSON.stringify(public_key));
         log("[Chiper key] ", JSON.stringify(secret_keys[clients[id].id.toString()]));
         users[clients[id].id].un = name;
         if(clients[id].un == null) {

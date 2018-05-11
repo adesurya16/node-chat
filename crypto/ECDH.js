@@ -33,7 +33,7 @@ exports.ECDH = function (_a = 91, _b = 79, __m = 911) {
 
   function modInverse(a, _m) {
     a = mod(a, _m);
-    for (i = 1; i < m; i++) {
+    for (i = 1; i < _m; i++) {
       if (mod((a * i), _m) == 1) {
         return i;
       }
@@ -85,6 +85,7 @@ exports.ECDH = function (_a = 91, _b = 79, __m = 911) {
     var i = 1;
     base = selectBase();
     publicKey = base;
+    // console.log("base "+JSON.stringify(base))
     while (i < _privateKey) {
       publicKey = add(publicKey, base);
       i++;

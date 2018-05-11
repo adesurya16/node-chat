@@ -485,14 +485,14 @@ Chiperblock.prototype.ECBmodeDecrypt = function(text,key){
 
 function encrypt(plaintext, key) {
     var chiper = new Chiperblock();
-    console.log(plaintext + " " + key);
-    console.log(typeof key);
+    console.log("Send : " + plaintext + " " + key);
+    // console.log(typeof key);
     return chiper.ECBmodeEncrypt(plaintext,key.toString());
 }
 
 function decrypt(chipertext, key) {
     var chiper = new Chiperblock();
-    console.log(chipertext + " " + key);
-    console.log(typeof key);        
+    console.log("Receive : " + chipertext + " " + key);
+    // console.log(typeof key);        
     return chiper.ECBmodeDecrypt(chipertext,key.toString());
 }

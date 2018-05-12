@@ -18,6 +18,11 @@ var blop = new Audio('sounds/blop.wav');
 var regex = /(&zwj;|&nbsp;)/g;
 
 
+var utf8 = {
+    encode: function (str) { return unescape(encodeURIComponent(str)); },
+    decode: function (str) { return decodeURIComponent(escape(str)); }
+};
+
 var settings = {
     'name': null,
     'emoji': true,
@@ -251,7 +256,7 @@ var connect = function() {
 /* Functions */
 function sendSocket(value, method, other, txt) {
     console.log("message", value);
-    const chiper_text = encrypt(value,secret_key);
+    const chiper_text = utf8.encode(encrypt(value,secret_key));
     socket.send(JSON.stringify({
         type: method,
         message: chiper_text,
@@ -292,7 +297,7 @@ function showChat(type, user, message, subtxt, mid) {
     var nameclass = '';
 
     if (type == "pm"){
-        message = decrypt(message,secret_key);
+        message = decrypt(utf8.decode(message),secret_key);
     }
 
     if(type == 'global' || type == 'kick' || type == 'ban' || type == 'info' || type == 'light' || type == 'help' || type == 'role') {

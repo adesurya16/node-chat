@@ -44,7 +44,6 @@ var ecdh_obj = ECDH(settings.a_parameter,settings.b_parameter,settings.m_paramet
 var private_key = ecdh_obj.createPrivateKey();
 var public_key = ecdh_obj.createPublicKey(private_key);
 var secret_key = "";
-console.info(public_key)
 
 /* Connection */
 var connect = function() {
@@ -63,8 +62,6 @@ var connect = function() {
             socket.send(JSON.stringify({type: 'ping'}));
         }, 50 * 1000);
         console.info('Connection established.');
-        console.info('Your private_key : ', private_key);
-        console.info('Your public key :',public_key);
         updateInfo();
     };
 
@@ -161,7 +158,6 @@ var connect = function() {
                     settings.name = username;
                     var secret_point = ecdh_obj.createSecretKey(private_key, data.public_key_server);
                     secret_key = secret_point.x + secret_point.y;
-                    console.info(secret_point);
                     settings.secret_key = secret_key;
                     localStorage.settings = JSON.stringify(settings);
                     break;
@@ -254,6 +250,7 @@ var connect = function() {
 
 /* Functions */
 function sendSocket(value, method, other, txt) {
+    console.log("message", value);
     const chiper_text = encrypt(value,secret_key);
     socket.send(JSON.stringify({
         type: method,
